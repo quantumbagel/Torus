@@ -35,6 +35,7 @@ To verify the system with simple shapes:
      --scale-max 0.25 \
      --rotation-min -180 \
      --rotation-max 180 \
+     --random-tint 0.2 \
      --clip-to-mask
    ```
 
@@ -58,6 +59,7 @@ python3 main.py <mask_path> <overlays_path> <output_path> [options]
 - `--scale-max <float>`: Maximum scaling factor of the overlay (default: `1.2`).
 - `--rotation-min <float>`: Minimum rotation angle in degrees (default: `0.0`).
 - `--rotation-max <float>`: Maximum rotation angle in degrees (default: `0.0`).
+- `--random-tint <float>`: Maximum random tint strength (`0.0` to `1.0`) applied per placement, darkening toward black or lightening toward white. At `1.0`, placements can reach full black/white extremes (default: `0.0`).
 - `--bg-color <str>`: Background canvas color. Can be `transparent` (default), a standard name (e.g. `white`, `red`), hex (e.g. `#ffffff`), or R,G,B integers (e.g. `255,255,255`).
 - `--clip-to-mask`: Clips any parts of the overlays that extend outside the boundary mask at rendering time.
 - `--invert-mask`: Inverts the boundary mask (treats black pixels as the allowed placement area and white as forbidden).

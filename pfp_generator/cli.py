@@ -70,6 +70,8 @@ def main():
                         help="Minimum rotation in degrees (default: 0.0).")
     parser.add_argument("--rotation-max", type=float, default=0.0,
                         help="Maximum rotation in degrees (default: 0.0).")
+    parser.add_argument("--random-tint", type=float, default=0.0,
+                        help="Maximum random tint strength (0.0 to 1.0) applied per placed image; darkens toward black or lightens toward white (default: 0.0).")
     parser.add_argument("--bg-color", default="transparent",
                         help="Background color. Can be 'transparent', color name (e.g. 'white'), hex (e.g. '#ffffff'), or R,G,B (default: transparent).")
     parser.add_argument("--clip-to-mask", action="store_true",
@@ -78,6 +80,10 @@ def main():
                         help="Invert the source mask (treat black as placement area, white as forbidden).")
 
     args = parser.parse_args()
+
+    if not (0.0 <= args.random_tint <= 1.0):
+        print("Error: --random-tint must be between 0.0 and 1.0.", file=sys.stderr)
+        sys.exit(1)
 
     # Verify input paths
     if not os.path.exists(args.mask_path):
@@ -99,6 +105,7 @@ def main():
         scale_max=args.scale_max,
         rotation_min=args.rotation_min,
         rotation_max=args.rotation_max,
+        random_tint=args.random_tint,
         bg_color=parse_color(args.bg_color),
         clip_to_mask=args.clip_to_mask,
         invert_mask=args.invert_mask

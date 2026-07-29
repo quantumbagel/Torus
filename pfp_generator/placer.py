@@ -34,6 +34,21 @@ class ImagePlacer:
         self.placed_mask = np.zeros((mask.height, mask.width), dtype=bool)
         self.placements: List[Placement] = []
 
+    def _apply_random_tint(self, image: Image.Image) -> Image.Image:
+        if self.config.random_tint <= 0.0:
+            return image
+
+        # Signed tint: negative darkens toward black, positive lightens toward white.
+        tint_amount = random.uniform(-self.config.random_tint, self.config.random_tint)
+        image_arr = np.array(image, dtype=np.uint8)
+        rgb = image_arr[:, :, :3].astype(np.float32)
+        if tint_amount >= 0.0:
+            rgb = rgb + (255.0 - rgb) * tint_amount
+        else:
+            rgb = rgb * (1.0 + tint_amount)
+        image_arr[:, :, :3] = np.clip(rgb, 0, 255).astype(np.uint8)
+        return Image.fromarray(image_arr, mode="RGBA")
+
     def attempt_placement(
         self, 
         image_path: str, 
@@ -67,6 +82,8 @@ class ImagePlacer:
             rotated_rgba = rotated_img.convert('RGBA')
         else:
             rotated_rgba = rotated_img
+
+        rotated_rgba = self._apply_random_tint(rotated_rgba)
             
         alpha_arr = np.array(rotated_rgba)[:, :, 3]
         candidate_footprint = alpha_arr > 0
